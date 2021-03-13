@@ -788,7 +788,7 @@ Slice expression parameters `start` and `end` are not directly usable
 as slice bounds and must first be normalized. Normalization is defined as:
 
 ~~~~
-FUNCTION Normalize(i):
+FUNCTION Normalize(i, len):
   IF i >= 0 THEN
     RETURN i
   ELSE
@@ -796,8 +796,9 @@ FUNCTION Normalize(i):
   END IF
 ~~~~
 
-The result of the array indexing expression `[i]` is defined to be the result of the array
-slicing expression `[i:Normalize(i)+1:1]`.
+The result of the array indexing expression `[i]` applied to an array
+of length `len` is defined to be the result of the array
+slicing expression `[i:Normalize(i, len)+1:1]`.
 
 Slice expression parameters `start` and `end` are used to derive slice bounds `lower` and `upper`.
 The direction of the iteration, defined
@@ -806,8 +807,8 @@ is the upper bound:
 
 ~~~~
 FUNCTION Bounds(start, end, step, len):
-  n_start = Normalize(start)
-  n_end = Normalize(end)
+  n_start = Normalize(start, len)
+  n_end = Normalize(end, len)
 
   IF step >= 0 THEN
     lower = MIN(MAX(n_start, 0), len)
